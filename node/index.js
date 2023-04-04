@@ -11,10 +11,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Create an instance of Pusher
 const pusher = new Pusher({
-    appId: 'XXX',
-    key: 'XXX',
-    secret: 'XXX',
-    cluster: 'ap1'
+    appId: process.env.APP_ID,
+    key: process.env.APP_KEY,
+    secret: process.env.APP_SECRET,
+    cluster: process.env.APP_CLUSTER
 });
 
 app.get('/', (req, res) => {
