@@ -9,6 +9,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // Session middleware
 
+app.use(express.static('public'))
+
 // Create an instance of Pusher
 const pusher = new Pusher({
     appId: process.env.APP_ID,
