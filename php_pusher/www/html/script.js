@@ -1,8 +1,11 @@
+Pusher.logToConsole = true;
+
 var pusher = new Pusher("4d99961ed8f70c04595a", {
     cluster: "ap1",
     encrypted: true,
-    authEndpoint: "pusher.php?action=auth"
+    authEndpoint: "/pusher.php?action=auth"
 });
+
 var usersOnline, id, users = [],
     sessionDesc,
     currentcaller, room, caller, localUserMedia;
@@ -22,6 +25,7 @@ const serverConfig = {}
 const channel = pusher.subscribe('presence-videocall');
 
 channel.bind('pusher:subscription_succeeded', (members) => {
+    console.log('successfully subscribed!');
     //set the member count
     usersOnline = members.count;
     id = channel.members.me.id;
