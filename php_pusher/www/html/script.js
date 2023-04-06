@@ -1,5 +1,3 @@
-Pusher.logToConsole = true;
-
 var pusher = new Pusher("4d99961ed8f70c04595a", {
     cluster: "ap1",
     encrypted: true,
@@ -21,7 +19,6 @@ remoteview.addEventListener('loadedmetadata', function () {
 });
 
 
-const serverConfig = {}
 const channel = pusher.subscribe('presence-videocall');
 
 channel.bind('pusher:subscription_succeeded', (members) => {
@@ -66,7 +63,6 @@ channel.bind("client-sdp", function (msg) {
         getCam()
             .then(stream => {
                 localUserMedia = stream;
-                toggleEndCallButton();
                 selfview.srcObject = stream;
 
                 stream.getTracks().forEach((track) => {
@@ -77,7 +73,7 @@ channel.bind("client-sdp", function (msg) {
                     caller.createAnswer().then(async function (sdp) {
                         console.log("create answer:", sdp);
                         await caller.setLocalDescription(sdp);
-
+                        toggleEndCallButton();
                         channel.trigger("client-answer", {
                             "sdp": sdp,
                             "room": room
@@ -143,6 +139,15 @@ function render() {
 prepareCaller()
 
 async function prepareCaller() {
+    // Calling the REST API TO fetch the TURN Server Credentials
+    const metered =
+        await fetch("https://dev-kerja.metered.live/api/v1/turn/credentials?apiKey=94c6ad9877f6ece098d24597cac4eb1d0c71");
+
+    // Saving the response in the iceServers array
+    const iceServers = await metered.json();
+
+    const serverConfig = { iceServers: iceServers }
+
     //Initializing a peer connection
     caller = new RTCPeerConnection(serverConfig);
 
@@ -158,6 +163,21 @@ async function prepareCaller() {
         console.log("onicecandidate called", evt);
         onIceCandidate(caller, evt);
     };
+
+    await getCam()
+        .then(stream => {
+            selfview.srcObject = stream;
+            console.log("local:", stream);
+
+            stream.getTracks().forEach((track) => {
+                caller.addTrack(track, stream)
+            })
+            localUserMedia = stream;
+
+        })
+        .catch(error => {
+            console.log('an error occured', error);
+        })
 }
 
 async function getCam() {
@@ -167,39 +187,22 @@ async function getCam() {
 
 //Create and send offer to remote peer on button click
 async function callUser(user) {
-    await getCam()
-        .then(stream => {
-            selfview.srcObject = stream;
-            console.log("local:", stream);
+    await caller.createOffer({
+        offerToReceiveAudio: 1,
+        offerToReceiveVideo: 1
+    }).then(async function (desc) {
+        await caller.setLocalDescription(desc);
+        // await caller.setRemoteDescription(desc);
+        console.log('caller:', caller)
 
-            toggleEndCallButton();
-
-            stream.getTracks().forEach((track) => {
-                caller.addTrack(track, stream)
-            })
-            localUserMedia = stream;
-
-            caller.createOffer({
-                offerToReceiveAudio: 1,
-                offerToReceiveVideo: 1
-            }).then(async function (desc) {
-                await caller.setLocalDescription(desc);
-                // await caller.setRemoteDescription(desc);
-                console.log('caller:', caller)
-
-                channel.trigger("client-sdp", {
-                    "sdp": desc,
-                    "room": user,
-                    "from": id
-                });
-                room = user;
-                console.log('Create Offer:', desc)
-            });
-
-        })
-        .catch(error => {
-            console.log('an error occured', error);
-        })
+        channel.trigger("client-sdp", {
+            "sdp": desc,
+            "room": user,
+            "from": id
+        });
+        room = user;
+        console.log('Create Offer:', desc)
+    });
 };
 
 //Send the ICE Candidate to the remote peer
