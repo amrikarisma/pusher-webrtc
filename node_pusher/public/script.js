@@ -150,7 +150,35 @@ async function prepareCaller() {
     // Saving the response in the iceServers array
     const iceServers = await metered.json();
 
-    const serverConfig = { iceServers: iceServers }
+    // const serverConfig = { iceServers: iceServers }
+    const serverConfig = {
+        iceServers: [
+            {
+                urls: [
+                    'stun:stun.l.google.com:19302',
+                    'stun:stun1.l.google.com:19302',
+                    'stun:stun2.l.google.com:19302',
+                    'stun:stun3.l.google.com:19302',
+                    'stun:stun4.l.google.com:19302',
+                ],
+            },
+            {
+                urls: 'turn:numb.viagenie.ca',
+                credential: 'muazkh',
+                username: 'webrtc@live.com',
+            },
+            {
+                urls: 'turn:numb.viagenie.ca',
+                credential: 'muazkh',
+                username: 'webrtc@live.com',
+            },
+            {
+                urls: 'turn:192.158.29.39:3478?transport=udp',
+                credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+                username: '28224511:1379330808',
+            },
+        ],
+    }
 
     //Initializing a peer connection
     caller = new RTCPeerConnection(serverConfig);
