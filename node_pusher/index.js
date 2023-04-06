@@ -41,3 +41,5 @@ app.post("/pusher/auth", (req, res) => {
 app.listen(3000, () => {
     return console.log('Server is up on 3000')
 });
+
+module.exports = app
