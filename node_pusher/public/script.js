@@ -154,7 +154,20 @@ async function prepareCaller() {
     const serverConfig = {
         iceServers: [
             {
-                urls: 'stun:stun.l.google.com:19302',
+                urls: "stun:stun.l.google.com:19302",
+            },
+            {
+                urls: "turn:a.relay.metered.ca:80",
+                username: "60ba6f66dd6f99ec8e8f1bce",
+                credential: "ldlyqPD7zZw1jAdj"
+            }, {
+                urls: "turn:a.relay.metered.ca:443",
+                username: "60ba6f66dd6f99ec8e8f1bce",
+                credential: "ldlyqPD7zZw1jAdj"
+            }, {
+                urls: "turn:a.relay.metered.ca:443?transport=tcp",
+                username: "60ba6f66dd6f99ec8e8f1bce",
+                credential: "ldlyqPD7zZw1jAdj"
             }
         ],
     }
