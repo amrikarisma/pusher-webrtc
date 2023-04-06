@@ -1,6 +1,24 @@
 {
-  "version": 2,
-  "name": "pusher-webrtc",
-  "builds": [{ "src": "index.js", "use": "@vercel/node" }],
-  "routes": [{ "src": "/script.js", "dest": "/public/script.js" },{ "src": "/(.*)", "dest": "/index.js" }]
+    "version": 2,
+    "name": "pusher-webrtc",
+    "builds": [
+        {
+            "src": "index.js",
+            "use": "@vercel/node"
+        },
+        {
+            "src": "public/**",
+            "use": "@vercel/static"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/script.js",
+            "dest": "/public/script.js"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/index.js"
+        }
+    ]
 }
