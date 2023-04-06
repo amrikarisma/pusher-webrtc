@@ -2,5 +2,5 @@
   "version": 2,
   "name": "pusher-webrtc",
   "builds": [{ "src": "index.js", "use": "@vercel/node" }],
-  "routes": [{ "src": "/script.js", "dest": "/script.js" },{ "src": "/(.*)", "dest": "/index.js" }]
+  "routes": [{ "src": "/script.js", "dest": "/public/script.js" },{ "src": "/(.*)", "dest": "/index.js" }]
 }
