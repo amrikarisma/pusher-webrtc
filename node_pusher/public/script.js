@@ -18,7 +18,6 @@ remoteview.addEventListener('loadedmetadata', function () {
 });
 
 
-const serverConfig = {}
 const channel = pusher.subscribe('presence-videocall');
 
 channel.bind('pusher:subscription_succeeded', (members) => {
@@ -140,6 +139,16 @@ function render() {
 prepareCaller()
 
 async function prepareCaller() {
+
+    // Calling the REST API TO fetch the TURN Server Credentials
+    const metered =
+        await fetch("https://dev-kerja.metered.live/api/v1/turn/credentials?apiKey=94c6ad9877f6ece098d24597cac4eb1d0c71");
+
+    // Saving the response in the iceServers array
+    const iceServers = await metered.json();
+
+    const serverConfig = { iceServers: iceServers }
+
     //Initializing a peer connection
     caller = new RTCPeerConnection(serverConfig);
 
