@@ -101,6 +101,7 @@ channel.bind("client-candidate", function (msg) {
 //Listening for answer to offer sent to remote peer
 channel.bind("client-answer", function (answer) {
     if (answer.room == room) {
+        toggleEndCallButton();
         console.log("answer received", answer);
         caller.setRemoteDescription(answer.sdp);
         console.log('caller:', caller)
@@ -154,6 +155,21 @@ async function prepareCaller() {
         console.log("onicecandidate called", evt);
         onIceCandidate(caller, evt);
     };
+
+    await getCam()
+        .then(stream => {
+            selfview.srcObject = stream;
+            console.log("local:", stream);
+
+            stream.getTracks().forEach((track) => {
+                caller.addTrack(track, stream)
+            })
+            localUserMedia = stream;
+
+        })
+        .catch(error => {
+            console.log('an error occured', error);
+        })
 }
 
 async function getCam() {
@@ -163,39 +179,22 @@ async function getCam() {
 
 //Create and send offer to remote peer on button click
 async function callUser(user) {
-    await getCam()
-        .then(stream => {
-            selfview.srcObject = stream;
-            console.log("local:", stream);
+    await caller.createOffer({
+        offerToReceiveAudio: 1,
+        offerToReceiveVideo: 1
+    }).then(async function (desc) {
+        await caller.setLocalDescription(desc);
+        // await caller.setRemoteDescription(desc);
+        console.log('caller:', caller)
 
-            toggleEndCallButton();
-
-            stream.getTracks().forEach((track) => {
-                caller.addTrack(track, stream)
-            })
-            localUserMedia = stream;
-
-            caller.createOffer({
-                offerToReceiveAudio: 1,
-                offerToReceiveVideo: 1
-            }).then(async function (desc) {
-                await caller.setLocalDescription(desc);
-                // await caller.setRemoteDescription(desc);
-                console.log('caller:', caller)
-
-                channel.trigger("client-sdp", {
-                    "sdp": desc,
-                    "room": user,
-                    "from": id
-                });
-                room = user;
-                console.log('Create Offer:', desc)
-            });
-
-        })
-        .catch(error => {
-            console.log('an error occured', error);
-        })
+        channel.trigger("client-sdp", {
+            "sdp": desc,
+            "room": user,
+            "from": id
+        });
+        room = user;
+        console.log('Create Offer:', desc)
+    });
 };
 
 //Send the ICE Candidate to the remote peer
