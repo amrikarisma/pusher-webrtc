@@ -154,8 +154,8 @@ async function prepareCaller() {
         urls: 'stun:coturn.development.my.id:5349'
     }, {
         urls: 'turn:coturn.development.my.id:5349',
-        credential: 'milimeterdev1',
-        username: 'dev2023'
+        credential: 'dev2023',
+        username: 'milimeterdev1'
     }];
 
     //Initializing a peer connection
