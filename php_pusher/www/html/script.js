@@ -150,9 +150,9 @@ async function prepareCaller() {
 
     const serverConfig = {
         iceServers: [{
-            urls: 'stun:coturn.development.my.id:5349'
+            urls: 'stun:coturn.development.my.id:3478'
         }, {
-            urls: 'turn:coturn.development.my.id:5349',
+            urls: 'turn:coturn.development.my.id:3478',
             credential: 'dev2023',
             username: 'milimeterdev1'
         }]
