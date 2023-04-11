@@ -6,3 +6,9 @@
 - https://web.dev/webrtc-basics/
 - https://webrtc.github.io/samples/
 - https://codelabs.developers.google.com/codelabs/webrtc-web/#0
+
+## Please Set .ENV file before run
+
+```
+cp .env.example .env
+```

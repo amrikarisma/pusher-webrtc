@@ -146,7 +146,17 @@ async function prepareCaller() {
     // Saving the response in the iceServers array
     const iceServers = await metered.json();
 
-    const serverConfig = { iceServers: iceServers }
+    // const serverConfig = { iceServers: iceServers }
+
+    const serverConfig = {
+        iceServers: [{
+            urls: 'stun:coturn.development.my.id:5349'
+        }, {
+            urls: 'turn:coturn.development.my.id:5349',
+            credential: 'dev2023',
+            username: 'milimeterdev1'
+        }]
+    };
 
     //Initializing a peer connection
     caller = new RTCPeerConnection(serverConfig);
