@@ -143,15 +143,27 @@ prepareCaller()
 
 async function prepareCaller() {
 
-    // Calling the REST API TO fetch the TURN Server Credentials
-    const metered =
-        await fetch("https://dev-kerja.metered.live/api/v1/turn/credentials?apiKey=94c6ad9877f6ece098d24597cac4eb1d0c71");
-
-    // Saving the response in the iceServers array
-    const iceServers = await metered.json();
-
     const serverConfig = {
-        iceServers: iceServers
+        iceServers: [
+            {
+                urls: "stun:a.relay.metered.ca:80",
+            },
+            {
+                urls: "turn:a.relay.metered.ca:80",
+                username: "60ba6f66dd6f99ec8e8f1bce",
+                credential: "ldlyqPD7zZw1jAdj",
+            },
+            {
+                urls: "turn:a.relay.metered.ca:443",
+                username: "60ba6f66dd6f99ec8e8f1bce",
+                credential: "ldlyqPD7zZw1jAdj",
+            },
+            {
+                urls: "turn:a.relay.metered.ca:443?transport=tcp",
+                username: "60ba6f66dd6f99ec8e8f1bce",
+                credential: "ldlyqPD7zZw1jAdj",
+            },
+        ]
     }
 
     // const serverConfig = {
