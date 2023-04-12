@@ -143,17 +143,34 @@ prepareCaller()
 
 async function prepareCaller() {
 
+    // const serverConfig = {
+    //     iceServers: [
+    //         {
+    //             urls: "stun:a.relay.metered.ca:80",
+    //         },
+    //         {
+    //             urls: "turn:a.relay.metered.ca:443?transport=tcp",
+    //             username: "60ba6f66dd6f99ec8e8f1bce",
+    //             credential: "ldlyqPD7zZw1jAdj",
+    //         },
+    //     ]
+    // }
+
     const serverConfig = {
         iceServers: [
+            { urls: ["stun:ss-turn2.xirsys.com"] },
             {
-                urls: "stun:a.relay.metered.ca:80",
-            },
-            {
-                urls: "turn:a.relay.metered.ca:443?transport=tcp",
-                username: "60ba6f66dd6f99ec8e8f1bce",
-                credential: "ldlyqPD7zZw1jAdj",
-            },
-        ]
+                username: "RWxBru_EK6BZK_QtXSnl8YVTjmuomsre-9YoQMBjaNl1epitM_QOSl-cq1zLjyJfAAAAAGQ2YX1rZW50b3M5Mw==",
+                credential: "ee9753da-d905-11ed-97a0-0242ac140004",
+                urls: [
+                    "turn:ss-turn2.xirsys.com:80?transport=udp",
+                    "turn:ss-turn2.xirsys.com:3478?transport=udp",
+                    "turn:ss-turn2.xirsys.com:80?transport=tcp",
+                    "turn:ss-turn2.xirsys.com:3478?transport=tcp",
+                    "turns:ss-turn2.xirsys.com:443?transport=tcp",
+                    "turns:ss-turn2.xirsys.com:5349?transport=tcp"
+                ]
+            }]
     }
 
     // const serverConfig = {
