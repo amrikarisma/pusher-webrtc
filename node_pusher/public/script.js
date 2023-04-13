@@ -156,32 +156,32 @@ async function prepareCaller() {
     //     ]
     // }
 
-    const serverConfig = {
-        iceServers: [
-            { urls: ["stun:ss-turn2.xirsys.com"] },
-            {
-                username: "RWxBru_EK6BZK_QtXSnl8YVTjmuomsre-9YoQMBjaNl1epitM_QOSl-cq1zLjyJfAAAAAGQ2YX1rZW50b3M5Mw==",
-                credential: "ee9753da-d905-11ed-97a0-0242ac140004",
-                urls: [
-                    "turn:ss-turn2.xirsys.com:80?transport=udp",
-                    "turn:ss-turn2.xirsys.com:3478?transport=udp",
-                    "turn:ss-turn2.xirsys.com:80?transport=tcp",
-                    "turn:ss-turn2.xirsys.com:3478?transport=tcp",
-                    "turns:ss-turn2.xirsys.com:443?transport=tcp",
-                    "turns:ss-turn2.xirsys.com:5349?transport=tcp"
-                ]
-            }]
-    }
-
     // const serverConfig = {
-    //     iceServers: [{
-    //         urls: 'stun:coturn.development.my.id:5349'
-    //     }, {
-    //         urls: 'turn:coturn.development.my.id:5349',
-    //         credential: 'dev2023',
-    //         username: 'milimeterdev1'
-    //     }]
-    // };
+    //     iceServers: [
+    //         { urls: ["stun:ss-turn2.xirsys.com"] },
+    //         {
+    //             username: "RWxBru_EK6BZK_QtXSnl8YVTjmuomsre-9YoQMBjaNl1epitM_QOSl-cq1zLjyJfAAAAAGQ2YX1rZW50b3M5Mw==",
+    //             credential: "ee9753da-d905-11ed-97a0-0242ac140004",
+    //             urls: [
+    //                 "turn:ss-turn2.xirsys.com:80?transport=udp",
+    //                 "turn:ss-turn2.xirsys.com:3478?transport=udp",
+    //                 "turn:ss-turn2.xirsys.com:80?transport=tcp",
+    //                 "turn:ss-turn2.xirsys.com:3478?transport=tcp",
+    //                 "turns:ss-turn2.xirsys.com:443?transport=tcp",
+    //                 "turns:ss-turn2.xirsys.com:5349?transport=tcp"
+    //             ]
+    //         }]
+    // }
+
+    const serverConfig = {
+        iceServers: [{
+            urls: 'stun:coturn.development.my.id:5349'
+        }, {
+            urls: 'turn:coturn.development.my.id:5349',
+            credential: 'dev2023',
+            username: 'milimeterdev1'
+        }]
+    };
 
 
     //Initializing a peer connection
