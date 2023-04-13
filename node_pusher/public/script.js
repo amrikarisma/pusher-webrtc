@@ -177,7 +177,10 @@ async function prepareCaller() {
         iceServers: [{
             urls: 'stun:coturn.development.my.id:5349'
         }, {
-            urls: 'turn:coturn.development.my.id:5349',
+            urls: [
+                'turn:coturn.development.my.id:3478?transport=tcp',
+                'turn:coturn.development.my.id:5349?transport=tcp'
+            ],
             credential: 'dev2023',
             username: 'milimeterdev1'
         }]
