@@ -178,10 +178,8 @@ async function prepareCaller() {
             urls: 'stun:coturn.development.my.id:5349'
         }, {
             urls: [
-                'turn:coturn.development.my.id:3478?transport=udp',
-                'turn:coturn.development.my.id:5349?transport=udp',
-                'turn:coturn.development.my.id:3478?transport=tcp',
-                'turn:coturn.development.my.id:5349?transport=tcp'
+                'turn:coturn.development.my.id:5349?transport=tcp',
+                'turn:coturn.development.my.id:3478?transport=tcp'
             ],
             credential: 'dev2023',
             username: 'milimeterdev1'
