@@ -229,6 +229,7 @@ async function prepareCaller() {
                 break;
             case "failed":
                 setOnlineStatus("Error");
+                endCurrentCall();
                 break;
             default:
                 setOnlineStatus("Unknown");
