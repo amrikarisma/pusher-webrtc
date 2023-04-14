@@ -190,6 +190,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'twilio/sdk' => array(
+            'pretty_version' => '7.2.0',
+            'version' => '7.2.0.0',
+            'reference' => '11271c602398f7678dc465dcab97601e6e866819',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../twilio/sdk',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'vlucas/phpdotenv' => array(
             'pretty_version' => 'v5.5.0',
             'version' => '5.5.0.0',
