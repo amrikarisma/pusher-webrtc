@@ -186,6 +186,8 @@ async function prepareCaller() {
         }]
     };
 
+    console.log('relay: ', serverConfig)
+
 
     //Initializing a peer connection
     caller = new RTCPeerConnection(serverConfig);
