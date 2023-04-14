@@ -23,6 +23,17 @@ app.get('/', (req, res) => {
     return res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/twilio-iceserver', async (req, res) => {
+
+    const accountSid = process.env.TWILIO_ACCOUNT_SID;
+    const authToken = process.env.TWILIO_AUTH_TOKEN;
+    const client = require('twilio')(accountSid, authToken);
+
+    let token = await client.tokens.create();
+    res.send(token);
+
+});
+
 // get authentictation for the channel;
 app.post("/pusher/auth", (req, res) => {
     const socketId = req.body.socket_id;
