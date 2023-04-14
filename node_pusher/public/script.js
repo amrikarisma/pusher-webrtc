@@ -216,6 +216,7 @@ async function prepareCaller() {
         switch (caller.connectionState) {
             case "new":
             case "checking":
+            case "connecting":
                 setOnlineStatus("Connecting…");
                 break;
             case "connected":

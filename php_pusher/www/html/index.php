@@ -45,7 +45,7 @@
     </div>
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
     <!-- <script src="https://js.pusher.com/4.1/pusher.min.js"></script> -->
-    <script src="script.js"></script>
+    <script src="script.js?v=2"></script>
     <style>
         video {
             /* video border */
