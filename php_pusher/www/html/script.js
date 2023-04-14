@@ -1,3 +1,7 @@
+
+// Enable pusher logging - don't include this in production
+Pusher.logToConsole = true;
+
 var pusher = new Pusher("4d99961ed8f70c04595a", {
     cluster: "ap1",
     encrypted: true,
@@ -22,7 +26,6 @@ remoteview.addEventListener('loadedmetadata', function () {
 const channel = pusher.subscribe('presence-videocall');
 
 channel.bind('pusher:subscription_succeeded', (members) => {
-    console.log('successfully subscribed!');
     //set the member count
     usersOnline = members.count;
     id = channel.members.me.id;
@@ -63,6 +66,7 @@ channel.bind("client-sdp", function (msg) {
         getCam()
             .then(stream => {
                 localUserMedia = stream;
+                toggleEndCallButton();
                 selfview.srcObject = stream;
 
                 stream.getTracks().forEach((track) => {
@@ -73,7 +77,7 @@ channel.bind("client-sdp", function (msg) {
                     caller.createAnswer().then(async function (sdp) {
                         console.log("create answer:", sdp);
                         await caller.setLocalDescription(sdp);
-                        toggleEndCallButton();
+
                         channel.trigger("client-answer", {
                             "sdp": sdp,
                             "room": room
@@ -101,6 +105,7 @@ channel.bind("client-candidate", function (msg) {
 //Listening for answer to offer sent to remote peer
 channel.bind("client-answer", function (answer) {
     if (answer.room == room) {
+        toggleEndCallButton();
         console.log("answer received", answer);
         caller.setRemoteDescription(answer.sdp);
         console.log('caller:', caller)
@@ -139,24 +144,52 @@ function render() {
 prepareCaller()
 
 async function prepareCaller() {
-    // Calling the REST API TO fetch the TURN Server Credentials
-    const metered =
-        await fetch("https://dev-kerja.metered.live/api/v1/turn/credentials?apiKey=94c6ad9877f6ece098d24597cac4eb1d0c71");
 
-    // Saving the response in the iceServers array
-    const iceServers = await metered.json();
+    // const serverConfig = {
+    //     iceServers: [
+    //         {
+    //             urls: "stun:a.relay.metered.ca:80",
+    //         },
+    //         {
+    //             urls: "turn:a.relay.metered.ca:443?transport=tcp",
+    //             username: "60ba6f66dd6f99ec8e8f1bce",
+    //             credential: "ldlyqPD7zZw1jAdj",
+    //         },
+    //     ]
+    // }
 
-    // const serverConfig = { iceServers: iceServers }
+    // const serverConfig = {
+    //     iceServers: [
+    //         { urls: ["stun:ss-turn2.xirsys.com"] },
+    //         {
+    //             username: "RWxBru_EK6BZK_QtXSnl8YVTjmuomsre-9YoQMBjaNl1epitM_QOSl-cq1zLjyJfAAAAAGQ2YX1rZW50b3M5Mw==",
+    //             credential: "ee9753da-d905-11ed-97a0-0242ac140004",
+    //             urls: [
+    //                 "turn:ss-turn2.xirsys.com:80?transport=udp",
+    //                 "turn:ss-turn2.xirsys.com:3478?transport=udp",
+    //                 "turn:ss-turn2.xirsys.com:80?transport=tcp",
+    //                 "turn:ss-turn2.xirsys.com:3478?transport=tcp",
+    //                 "turns:ss-turn2.xirsys.com:443?transport=tcp",
+    //                 "turns:ss-turn2.xirsys.com:5349?transport=tcp"
+    //             ]
+    //         }]
+    // }
 
     const serverConfig = {
         iceServers: [{
-            urls: 'stun:coturn.development.my.id:3478'
+            urls: 'stun:coturn.development.my.id:5349'
         }, {
-            urls: 'turn:coturn.development.my.id:3478',
+            urls: [
+                'turn:coturn.development.my.id:3478?transport=udp',
+                'turn:coturn.development.my.id:5349?transport=udp',
+                'turn:coturn.development.my.id:3478?transport=tcp',
+                'turn:coturn.development.my.id:5349?transport=tcp'
+            ],
             credential: 'dev2023',
             username: 'milimeterdev1'
         }]
     };
+
 
     //Initializing a peer connection
     caller = new RTCPeerConnection(serverConfig);
