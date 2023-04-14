@@ -175,18 +175,28 @@ async function prepareCaller() {
     //         }]
     // }
 
+    // const serverConfig = {
+    //     iceServers: [{
+    //         urls: 'stun:coturn.development.my.id:5349'
+    //     }, {
+    //         urls: [
+    //             'turn:coturn.development.my.id:5349?transport=tcp',
+    //             'turn:coturn.development.my.id:3478?transport=tcp'
+    //         ],
+    //         credential: 'dev2023',
+    //         username: 'milimeterdev1'
+    //     }]
+    // };
+
+
+    const response = await fetch("twilio.php");
+    const twilio = await response.json();
+
     const serverConfig = {
-        iceServers: [{
-            urls: 'stun:coturn.development.my.id:5349'
-        }, {
-            urls: [
-                'turn:coturn.development.my.id:5349?transport=tcp',
-                'turn:coturn.development.my.id:3478?transport=tcp'
-            ],
-            credential: 'dev2023',
-            username: 'milimeterdev1'
-        }]
+        iceServers: twilio.iceServers
     };
+
+    console.log('relay: ', serverConfig)
 
 
     //Initializing a peer connection

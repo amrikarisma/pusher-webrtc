@@ -186,8 +186,7 @@ async function prepareCaller() {
     //     }]
     // };
 
-    const response =
-        await fetch("twilio-iceserver");
+    const response = await fetch("twilio-iceserver");
     const twilio = await response.json();
 
     const serverConfig = {
@@ -211,6 +210,30 @@ async function prepareCaller() {
         if (!evt.candidate) return;
         console.log("onicecandidate called", evt);
         onIceCandidate(caller, evt);
+    };
+
+    caller.onconnectionstatechange = (ev) => {
+        switch (caller.connectionState) {
+            case "new":
+            case "checking":
+                setOnlineStatus("Connecting…");
+                break;
+            case "connected":
+                setOnlineStatus("Online");
+                break;
+            case "disconnected":
+                setOnlineStatus("Disconnecting…");
+                break;
+            case "closed":
+                setOnlineStatus("Offline");
+                break;
+            case "failed":
+                setOnlineStatus("Error");
+                break;
+            default:
+                setOnlineStatus("Unknown");
+                break;
+        }
     };
 
     await getCam()
@@ -276,8 +299,8 @@ async function endCall() {
     room = undefined;
     caller.close();
     for (let track of localUserMedia.getTracks()) { track.stop() }
-    prepareCaller();
     toggleEndCallButton();
+    prepareCaller();
 
 }
 
@@ -288,4 +311,9 @@ function endCurrentCall() {
     });
 
     endCall();
+}
+
+function setOnlineStatus(status) {
+    console.log('status: ', status)
+    document.querySelector('#status').textContent = 'Status: ' + status
 }
