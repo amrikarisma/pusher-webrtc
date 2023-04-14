@@ -8,6 +8,11 @@
             display: flex;
             flex-wrap: wrap;
             width: 100%;
+            justify-content: center;
+        }
+
+        .gx-5 {
+            gap: 15px;
         }
 
         .container video {
@@ -27,7 +32,10 @@
 
         </div>
         <div>
-            <button id="endCall" style="display: none;" onclick="endCurrentCall()">End Call </button>
+            <div class="container gx-5">
+                <div id="status"></div>
+                <button id="endCall" style="display: none;" onclick="endCurrentCall()">End Call </button>
+            </div>
             <div id="list">
                 <ul id="users">
 

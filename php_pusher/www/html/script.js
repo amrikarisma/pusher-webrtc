@@ -215,6 +215,30 @@ async function prepareCaller() {
         onIceCandidate(caller, evt);
     };
 
+    caller.onconnectionstatechange = (ev) => {
+        switch (caller.connectionState) {
+            case "new":
+            case "checking":
+                setOnlineStatus("Connecting…");
+                break;
+            case "connected":
+                setOnlineStatus("Online");
+                break;
+            case "disconnected":
+                setOnlineStatus("Disconnecting…");
+                break;
+            case "closed":
+                setOnlineStatus("Offline");
+                break;
+            case "failed":
+                setOnlineStatus("Error");
+                break;
+            default:
+                setOnlineStatus("Unknown");
+                break;
+        }
+    };
+
     await getCam()
         .then(stream => {
             selfview.srcObject = stream;
@@ -290,4 +314,9 @@ function endCurrentCall() {
     });
 
     endCall();
+}
+
+function setOnlineStatus(status) {
+    console.log('status: ', status)
+    document.querySelector('#status').textContent = 'Status: ' + status
 }
