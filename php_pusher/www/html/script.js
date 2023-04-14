@@ -5,7 +5,7 @@ Pusher.logToConsole = true;
 var pusher = new Pusher("4d99961ed8f70c04595a", {
     cluster: "ap1",
     encrypted: true,
-    authEndpoint: "/pusher.php?action=auth"
+    authEndpoint: "./pusher.php?action=auth"
 });
 
 var usersOnline, id, users = [],
@@ -180,10 +180,8 @@ async function prepareCaller() {
             urls: 'stun:coturn.development.my.id:5349'
         }, {
             urls: [
-                'turn:coturn.development.my.id:3478?transport=udp',
-                'turn:coturn.development.my.id:5349?transport=udp',
-                'turn:coturn.development.my.id:3478?transport=tcp',
-                'turn:coturn.development.my.id:5349?transport=tcp'
+                'turn:coturn.development.my.id:5349?transport=tcp',
+                'turn:coturn.development.my.id:3478?transport=tcp'
             ],
             credential: 'dev2023',
             username: 'milimeterdev1'
