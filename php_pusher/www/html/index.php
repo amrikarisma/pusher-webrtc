@@ -1,3 +1,6 @@
+<?php
+require_once('loader.php');
+?>
 <!DOCTYPE html>
 <html>
 
@@ -25,11 +28,20 @@
 <body>
     <div id="app">
         <div class="title">WebRTC Audio/Video-Chat</div>
-        <span id="myid"> </span>
+        <div style="display:flex;width: 100%;justify-content: space-between;">
+            <div>
+                <span id="myid"> </span>
+                <div>
+                    Email : <span id="userEmail"><?php echo get_user()['email']; ?></span>
+                </div>
+            </div>
+            <div>
+                <a href="logout.php">Logout</a>
+            </div>
+        </div>
         <div class="container">
             <video id="selfview" playsinline autoplay muted></video>
             <video id="remoteview" playsinline autoplay></video>
-
         </div>
         <div>
             <div class="container gx-5">
@@ -44,7 +56,6 @@
         </div>
     </div>
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
-    <!-- <script src="https://js.pusher.com/4.1/pusher.min.js"></script> -->
     <script src="script.js?v=2"></script>
     <style>
         video {

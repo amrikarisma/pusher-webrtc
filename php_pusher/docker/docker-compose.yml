@@ -23,3 +23,35 @@ services:
     volumes:
       - ../www:/var/www
       - ./php/php.ini:/usr/local/etc/php/php.ini
+
+  # database
+  mysql:
+    container_name: "${PROJECT_NAME}-mysql-5.5"
+    image: "mysql:5.5"
+    command: --max_allowed_packet=32505856
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=${PROJECT_NAME}
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+      - TZ=Asia/Tokyo
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db/data:/var/lib/mysql
+      - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
+
+  # phpmyadmin
+  phpmyadmin:
+    container_name: "${PROJECT_NAME}-phpmyadmin"
+    image: "phpmyadmin/phpmyadmin"
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - PMA_USER=user
+      - PMA_PASSWORD=password
+    ports:
+      - 8080:80
+    volumes:
+      - ./phpmyadmin/sessions:/sessions
+      - ./phpmyadmin/phpmyadmin-misc.ini:/usr/local/etc/php/conf.d/phpmyadmin-misc.ini

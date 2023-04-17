@@ -1,12 +1,13 @@
-
 // Enable pusher logging - don't include this in production
 Pusher.logToConsole = true;
+let user = document.querySelector('#userEmail').textContent;
 
 var pusher = new Pusher("4d99961ed8f70c04595a", {
     cluster: "ap1",
     encrypted: true,
-    authEndpoint: "./pusher.php?action=auth"
+    authEndpoint: "./pusher.php?action=auth&email=" + user
 });
+const channel = pusher.subscribe('presence-videocall');
 
 var usersOnline, id, users = [],
     sessionDesc,
@@ -23,30 +24,36 @@ remoteview.addEventListener('loadedmetadata', function () {
 });
 
 
-const channel = pusher.subscribe('presence-videocall');
 
+channel.bind('pusher:subscription_error', (error) => {
+    console.log(error);
+    // setTimeout(() => {
+    //     location.reload();
+    // }, 3000);
+})
 channel.bind('pusher:subscription_succeeded', (members) => {
     //set the member count
     usersOnline = members.count;
     id = channel.members.me.id;
     document.getElementById('myid').innerHTML = ` My caller id is : ` + id;
     members.each((member) => {
+        console.log(member)
         if (member.id != channel.members.me.id) {
-            users.push(member.id)
+            users.push(member.info)
         }
     });
-
+    prepareCaller()
     render();
 })
 
 channel.bind('pusher:member_added', (member) => {
-    users.push(member.id)
+    users.push(member.info)
     render();
 });
 
 channel.bind('pusher:member_removed', (member) => {
     // for remove member from list:
-    var index = users.indexOf(member.id);
+    var index = users.indexOf(member.info);
     users.splice(index, 1);
     if (member.id == room) {
         endCall();
@@ -66,7 +73,6 @@ channel.bind("client-sdp", function (msg) {
         getCam()
             .then(stream => {
                 localUserMedia = stream;
-                toggleEndCallButton();
                 selfview.srcObject = stream;
 
                 stream.getTracks().forEach((track) => {
@@ -76,6 +82,7 @@ channel.bind("client-sdp", function (msg) {
                 caller.setRemoteDescription(msg.sdp).then(function () {
                     caller.createAnswer().then(async function (sdp) {
                         console.log("create answer:", sdp);
+                        toggleEndCallButton();
                         await caller.setLocalDescription(sdp);
 
                         channel.trigger("client-answer", {
@@ -108,8 +115,6 @@ channel.bind("client-answer", function (answer) {
         toggleEndCallButton();
         console.log("answer received", answer);
         caller.setRemoteDescription(answer.sdp);
-        console.log('caller:', caller)
-
     }
 
 });
@@ -133,15 +138,13 @@ channel.bind("client-endcall", function (answer) {
 });
 
 function render() {
+    console.log(users)
     var list = '';
     users.forEach(function (user) {
-        list += `<li>` + user + ` <input type="button" style="float:right;"  value="Call" onclick="callUser('` + user + `')" id="makeCall" /></li>`
+        list += `<li>` + user.name + `<div style="float:right"><button type="button" class="btn-call" onclick="callUser('` + user.id + `')">Call</button><button type="button" onclick="endCurrentCall()" style="display:none;">End Call</button></div></li>`
     })
     document.getElementById('users').innerHTML = list;
 }
-
-
-prepareCaller()
 
 async function prepareCaller() {
 
@@ -270,8 +273,6 @@ async function callUser(user) {
     }).then(async function (desc) {
         await caller.setLocalDescription(desc);
         // await caller.setRemoteDescription(desc);
-        console.log('caller:', caller)
-
         channel.trigger("client-sdp", {
             "sdp": desc,
             "room": user,
@@ -292,12 +293,19 @@ async function onIceCandidate(peer, evt) {
     }
 }
 
-function toggleEndCallButton() {
-    if (document.getElementById("endCall").style.display == 'block') {
+function toggleEndCallButton(sdp = null) {
+    if (document.getElementById("endCall").style.display == 'block' || sdp?.type == 'offer') {
         document.getElementById("endCall").style.display = 'none';
+        document.querySelectorAll('.btn-call').forEach(btnCall => {
+            btnCall.removeAttribute('style');
+        });
     } else {
         document.getElementById("endCall").style.display = 'block';
+        document.querySelectorAll('.btn-call').forEach(btnCall => {
+            btnCall.style.display = 'none';
+        });
     }
+
 }
 
 async function endCall() {

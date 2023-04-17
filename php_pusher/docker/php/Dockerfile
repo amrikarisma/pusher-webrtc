@@ -8,21 +8,7 @@ RUN apt-get install -y libonig-dev \
     mariadb-client \
     libpng-dev \
     libgmp-dev
-RUN docker-php-ext-install pdo_mysql
-RUN docker-php-ext-install mysql
-RUN docker-php-ext-install mysqli
-RUN docker-php-ext-install mbstring
-RUN docker-php-ext-install zip
-RUN docker-php-ext-install exif
-RUN docker-php-ext-install gd
-RUN docker-php-ext-install gettext
-# RUN docker-php-ext-install gmp
-
-RUN docker-php-ext-configure hash --with-mhash \
-    && docker-php-ext-install hash
-
-RUN docker-php-ext-configure pcntl --enable-pcntl \
-    && docker-php-ext-install pcntl
+RUN docker-php-ext-install pdo_mysql mysqli mbstring zip exif gd gettext
 
 # install Composer
 COPY --from=composer/composer /usr/bin/composer /usr/bin/composer
@@ -32,7 +18,7 @@ RUN apt-get update && apt-get -y install vim
 
 # Install Node.js
 RUN apt-get install -y curl gnupg
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get install -y nodejs
 # RUN npm install npm@latest -g
 
