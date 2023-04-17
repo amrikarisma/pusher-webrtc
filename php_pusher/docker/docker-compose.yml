@@ -31,7 +31,7 @@ services:
     command: --max_allowed_packet=32505856
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=${PROJECT_NAME}
+      - MYSQL_DATABASE=${DB_NAME}
       - MYSQL_USER=user
       - MYSQL_PASSWORD=password
       - TZ=Asia/Tokyo
@@ -40,6 +40,7 @@ services:
     volumes:
       - ./db/data:/var/lib/mysql
       - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ../www/html/_sql/${DB_NAME}.sql:/docker-entrypoint-initdb.d/${DB_NAME}.sql
 
   # phpmyadmin
   phpmyadmin:
