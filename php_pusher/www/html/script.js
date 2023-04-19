@@ -67,7 +67,7 @@ channel.bind("client-sdp", function (msg) {
     if (msg.room == me.id) {
         var answer = confirm(`You have a call from: ${msg.fromName} (${msg.fromEmail}) Would you like to answer?`);
         if (!answer) {
-            return channel.trigger("client-reject", { "room": msg.room, "rejected": id });
+            return channel.trigger("client-reject", { "room": msg.room, "rejected": me.name });
         }
         room = msg.room;
         updateInfo(msg)
@@ -125,7 +125,7 @@ channel.bind("client-answer", function (answer) {
 channel.bind("client-reject", function (answer) {
     if (answer.room == room) {
         console.log("Call declined");
-        alert("call to " + answer.rejected + "was politely declined");
+        alert("call to " + answer.rejected + " was politely declined");
         endCall();
     }
 
@@ -135,7 +135,7 @@ channel.bind("client-endcall", function (answer) {
     if (answer.room == room) {
         console.log("Call Ended");
         endCall();
-
+        toggleEndCallButton();
     }
 
 });
@@ -315,6 +315,7 @@ async function onIceCandidate(peer, evt) {
 }
 
 function toggleEndCallButton(sdp = null) {
+    console.log('Update toggle End Call ', sdp)
     if (document.getElementById("endCall").style.display == 'block' || sdp?.type == 'offer') {
         document.getElementById("endCall").style.display = 'none';
         document.querySelectorAll('.btn-call').forEach(btnCall => {
@@ -334,7 +335,6 @@ async function endCall() {
     caller.close();
     for (let track of localUserMedia.getTracks()) { track.stop() }
     prepareCaller();
-    toggleEndCallButton();
     updateInfo()
 }
 
@@ -343,6 +343,8 @@ function endCurrentCall() {
     channel.trigger("client-endcall", {
         "room": room
     });
+
+    toggleEndCallButton();
 
     endCall();
 }
