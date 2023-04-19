@@ -2,7 +2,7 @@
 
 require_once('loader.php');
 if (isset($_POST)) {
-    if (isset($_POST['email'])) {
+    if (isset($_POST['email']) && !empty($_POST['email'])) {
         set_user_register($_POST);
     }
 }
@@ -32,8 +32,8 @@ if (isset($_POST)) {
         <div>
             <h2>Register</h2>
             <form action="" method="post">
-                <input type="text" name="name" placeholder="Name">
-                <input type="email" name="email" placeholder="Email">
+                <input type="text" name="name" placeholder="Name" required>
+                <input type="email" name="email" placeholder="Email" required>
                 <button type="submit">Register</button>
             </form>
             <div>

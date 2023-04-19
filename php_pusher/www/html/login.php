@@ -35,7 +35,7 @@ if (isset($_POST)) {
             <h2>Login</h2>
             <form action="" method="post">
                 <div style="display: flex;gap:15px; ">
-                    <input type="email" name="email" placeholder="Email">
+                    <input type="email" name="email" placeholder="Email" required>
 
                     <button type="submit">Login</button>
                 </div>
