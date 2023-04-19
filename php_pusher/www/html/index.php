@@ -122,14 +122,14 @@ require_once('loader.php');
             color: #bfe1f1;
         }
 
-        #list ul li:hover {
+        /* #list ul li:hover {
             -moz-transform: rotate(-5deg);
             -moz-box-shadow: 10px 10px 20px #000000;
             -webkit-transform: rotate(-5deg);
             -webkit-box-shadow: 10px 10px 20px #000000;
             transform: rotate(-5deg);
             box-shadow: 10px 10px 20px #000000;
-        }
+        } */
     </style>
 
 </body>

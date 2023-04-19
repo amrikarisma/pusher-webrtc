@@ -6,11 +6,6 @@ if (isset($_POST)) {
         set_user_login($_POST['email']);
     }
 }
-
-if (isset($_SESSION['login_error'])) {
-    echo $_SESSION['login_error'];
-    unset($_SESSION['login_error']);
-}
 ?>
 <html>
 
@@ -41,9 +36,20 @@ if (isset($_SESSION['login_error'])) {
             <form action="" method="post">
                 <div style="display: flex;gap:15px; ">
                     <input type="email" name="email" placeholder="Email">
+
                     <button type="submit">Login</button>
                 </div>
             </form>
+            <div>
+                <p style="font-weight: bold;color:red;">
+                    <?php
+                    if (isset($_SESSION['login_error'])) {
+                        echo $_SESSION['login_error'];
+                        unset($_SESSION['login_error']);
+                    }
+                    ?>
+                </p>
+            </div>
             <a href="register.php">Register</a>
         </div>
     </div>
