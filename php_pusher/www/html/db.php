@@ -1,8 +1,9 @@
 <?php
-$servername = "mysql";
-$database = "webrtc_test";
-$username = "user";
-$password = "password";
+$servername = $_ENV['DB_HOST'];
+$database = $_ENV['DB_NAME'];
+$username = $_ENV['DB_USER'];
+$password = $_ENV['DB_PASSWORD'];
+
 // Create connection
 $db = mysqli_connect($servername, $username, $password, $database);
 // Check connection
