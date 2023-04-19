@@ -1,5 +1,5 @@
 // Enable pusher logging - don't include this in production
-Pusher.logToConsole = true;
+Pusher.logToConsole = false;
 let user = document.querySelector('#userEmail').textContent;
 
 var pusher = new Pusher("4d99961ed8f70c04595a", {
@@ -9,7 +9,8 @@ var pusher = new Pusher("4d99961ed8f70c04595a", {
 });
 const channel = pusher.subscribe('presence-videocall');
 
-var usersOnline, id, users = [],
+var usersOnline, users = [],
+    me,
     sessionDesc,
     currentcaller, room, caller, localUserMedia;
 
@@ -34,10 +35,10 @@ channel.bind('pusher:subscription_error', (error) => {
 channel.bind('pusher:subscription_succeeded', (members) => {
     //set the member count
     usersOnline = members.count;
-    id = channel.members.me.id;
-    document.getElementById('myid').innerHTML = ` My caller id is : ` + id;
+    me = channel.members.me.info;
+
+    document.getElementById('myid').innerHTML = ` My caller id is : ` + me.id;
     members.each((member) => {
-        console.log(member)
         if (member.id != channel.members.me.id) {
             users.push(member.info)
         }
@@ -63,13 +64,13 @@ channel.bind('pusher:member_removed', (member) => {
 
 //Listening for Session Description Protocol message with session details from remote peer
 channel.bind("client-sdp", function (msg) {
-    if (msg.room == id) {
-
-        var answer = confirm("You have a call from: " + msg.from + "Would you like to answer?");
+    if (msg.room == me.id) {
+        var answer = confirm(`You have a call from: ${msg.fromName} (${msg.fromEmail}) Would you like to answer?`);
         if (!answer) {
             return channel.trigger("client-reject", { "room": msg.room, "rejected": id });
         }
         room = msg.room;
+        updateInfo(msg)
         getCam()
             .then(stream => {
                 localUserMedia = stream;
@@ -87,7 +88,9 @@ channel.bind("client-sdp", function (msg) {
 
                         channel.trigger("client-answer", {
                             "sdp": sdp,
-                            "room": room
+                            "room": room,
+                            "fromEmail": msg.userName,
+                            "fromName": msg.userEmail,
                         });
                     });
                 })
@@ -100,7 +103,6 @@ channel.bind("client-sdp", function (msg) {
 
 //Listening for the candidate message from a peer sent from onicecandidate handler
 channel.bind("client-candidate", function (msg) {
-    console.log(msg)
     if (msg.room == room) {
         // const candidate = new RTCIceCandidate(msg.candidate);
 
@@ -112,9 +114,10 @@ channel.bind("client-candidate", function (msg) {
 //Listening for answer to offer sent to remote peer
 channel.bind("client-answer", function (answer) {
     if (answer.room == room) {
-        toggleEndCallButton();
+        toggleEndCallButton(answer);
         console.log("answer received", answer);
         caller.setRemoteDescription(answer.sdp);
+        updateInfo(answer)
     }
 
 });
@@ -138,12 +141,23 @@ channel.bind("client-endcall", function (answer) {
 });
 
 function render() {
-    console.log(users)
     var list = '';
     users.forEach(function (user) {
-        list += `<li>` + user.name + `<div style="float:right"><button type="button" class="btn-call" onclick="callUser('` + user.id + `')">Call</button><button type="button" onclick="endCurrentCall()" style="display:none;">End Call</button></div></li>`
+        list += `<li>` + user.name + `<div style="float:right"><button type="button" class="btn-call" data-id="${user.id}">Call</button><button type="button" onclick="endCurrentCall()" style="display:none;">End Call</button></div></li>`
     })
     document.getElementById('users').innerHTML = list;
+
+    document.querySelectorAll('.btn-call').forEach(btnCall => {
+        btnCall.addEventListener('click', function (e) {
+            users.findIndex(object => {
+                if (object.id === btnCall.getAttribute('data-id')) {
+                    callUser(object)
+                }
+                return object.id === btnCall.getAttribute('data-id');
+            });
+
+        })
+    });
 }
 
 async function prepareCaller() {
@@ -275,10 +289,14 @@ async function callUser(user) {
         // await caller.setRemoteDescription(desc);
         channel.trigger("client-sdp", {
             "sdp": desc,
-            "room": user,
-            "from": id
+            "room": user.id,
+            "from": me.id,
+            "fromName": me.name,
+            "fromEmail": me.email,
+            "userName": user.name,
+            "userEmail": user.email,
         });
-        room = user;
+        room = user.id;
         console.log('Create Offer:', desc)
     });
 };
@@ -314,7 +332,7 @@ async function endCall() {
     for (let track of localUserMedia.getTracks()) { track.stop() }
     prepareCaller();
     toggleEndCallButton();
-
+    updateInfo()
 }
 
 function endCurrentCall() {
@@ -329,4 +347,16 @@ function endCurrentCall() {
 function setOnlineStatus(status) {
     console.log('status: ', status)
     document.querySelector('#status').textContent = 'Status: ' + status
+}
+
+function updateInfo(param = null) {
+    console.log('Update Info:', param)
+    console.log('Update Info:', document.getElementById('remoteName'))
+    if (document.getElementById('remoteName')) {
+        if (param != null) {
+            document.getElementById('remoteName').textContent = `${param.fromName} (${param.fromEmail})`
+        } else {
+            document.getElementById('remoteName').textContent = 'Remote (Waiting...)'
+        }
+    }
 }

@@ -5,8 +5,17 @@ require_once('loader.php');
 <html>
 
 <head>
-    <title>WebRTC Audio/Video-Chat</title>
+    <title>Video Call with Pusher and WebRTC</title>
     <style>
+        body {
+            background-color: #141a36;
+            color: #fff;
+        }
+
+        a {
+            color: #fff;
+        }
+
         .container {
             display: flex;
             flex-wrap: wrap;
@@ -18,9 +27,25 @@ require_once('loader.php');
             gap: 15px;
         }
 
-        .container video {
+        .container .video-wrap {
+            position: relative;
             width: 40%;
             flex: 1;
+            height: 100%;
+        }
+
+        .video-wrap .name {
+            position: absolute;
+            left: 50px;
+            bottom: 50px;
+            background-color: #00000091;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .container video {
+            width: 90%;
+            aspect-ratio: 16/11;
         }
     </style>
 </head>
@@ -40,8 +65,14 @@ require_once('loader.php');
             </div>
         </div>
         <div class="container">
-            <video id="selfview" playsinline autoplay muted></video>
-            <video id="remoteview" playsinline autoplay></video>
+            <div class="video-wrap">
+                <video id="selfview" playsinline autoplay muted></video>
+                <div class="name">Me (<?php echo get_user()['name']; ?>)</div>
+            </div>
+            <div class="video-wrap">
+                <video id="remoteview" playsinline autoplay></video>
+                <div class="name" id="remoteName">Remote (Waiting...)</div>
+            </div>
         </div>
         <div>
             <div class="container gx-5">
