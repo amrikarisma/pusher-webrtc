@@ -65,8 +65,12 @@ channel.bind('pusher:member_removed', (member) => {
 //Listening for Session Description Protocol message with session details from remote peer
 channel.bind("client-sdp", function (msg) {
     if (msg.room == me.id) {
+        document.getElementById('xyz').play();
         var answer = confirm(`You have a call from: ${msg.fromName} (${msg.fromEmail}) Would you like to answer?`);
+        document.getElementById('xyz').pause();
+        document.getElementById('xyz').currentTime = 0;
         if (!answer) {
+
             return channel.trigger("client-reject", { "room": msg.room, "rejected": me.name });
         }
         room = msg.room;

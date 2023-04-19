@@ -53,6 +53,7 @@ require_once('loader.php');
 <body>
     <div id="app">
         <div class="title">WebRTC Audio/Video-Chat</div>
+        <audio id="xyz" src="assets/audio/phone-ringing-6805.mp3" preload="auto"></audio>
         <div style="display:flex;width: 100%;justify-content: space-between;">
             <div>
                 <span id="myid"> </span>
