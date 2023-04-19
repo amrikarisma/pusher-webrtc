@@ -145,7 +145,10 @@ function render() {
     users.forEach(function (user) {
         list += `<li>` + user.name + `<div style="float:right"><button type="button" class="btn-call" data-id="${user.id}">Call</button><button type="button" onclick="endCurrentCall()" style="display:none;">End Call</button></div></li>`
     })
-    document.getElementById('users').innerHTML = list;
+
+    let noMemberOnline = `<li>No members online</li>`
+
+    document.getElementById('users').innerHTML = users.length > 0 ? list : noMemberOnline;
 
     document.querySelectorAll('.btn-call').forEach(btnCall => {
         btnCall.addEventListener('click', function (e) {
